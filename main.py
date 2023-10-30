@@ -8,6 +8,20 @@ WHITE = (255, 255, 255)
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
 
+
+wall_list = []
+for i in range(5):
+    x = random.randrange(50, 500)
+    y = random.randrange(50, 500)
+    width = random.randrange(20, 150)
+    height = random.randrange(20, 150)
+    if width > height:
+        height == 20
+        width == 150
+    elif height > width:
+        width == 20
+        height == 150
+    wall_list.append([x, y, width, height])
 # Player
 class Player():
     def __init__(self):
@@ -19,6 +33,7 @@ class Player():
         # player's speed and direction / vector
         self.change_x = 0
         self.change_y = 0
+        
     
     def go_left(self):
         self.change_x = -3
@@ -41,6 +56,23 @@ class Player():
         self.change_x = 0
         self.change_y = 0
 
+    def stop_at_border(self):
+        if self.player_x >= 730:
+            self.player_x = 730
+        elif self.player_x <= 70:
+            self.player_x = 70
+        elif self.player_y >= 730:
+            self.player_y = 730
+        elif self.player_y <= 70:
+            self.player_y = 70
+
+    def stop_at_walls(self):
+        for i in range(len(wall_list)):
+            if wall_list.x[i] == self.player_x + self.player_width or wall_list.x[i] + wall_list.width[i] == self.player_x:
+                self.player_x = 200
+            
+
+
     def draw_player(self, screen):
         screen.fill(WHITE)
         pygame.draw.rect(screen, RED, [self.player_x, self.player_y, self.player_width, self.player_height])
@@ -56,24 +88,16 @@ def main():
     # Create player
     player = Player()
 
-    # Make random wall list
-    wall_list = []
-    for i in range(5):
-        x = random.randrange(50, 500)
-        y = random.randrange(50, 500)
-        width = 20
-        height = 20
-        if width > height:
-            height == 20
-        elif height > width:
-            width == 20
-        wall_list.append([x, y, width, height])
     # Make borders
     def make_border():
         # Borders
+        # Top side horizontal
         pygame.draw.rect(screen, GREY, [50, 50, 700, 20])
+        # Right side vertical
         pygame.draw.rect(screen, GREY, [50, 50, 20, 700])
+        # Bottom side horizontal
         pygame.draw.rect(screen, GREY, [50, 750, 700, 20])
+        # Right side vertical
         pygame.draw.rect(screen, GREY, [750, 50, 20, 720])
 
     # Used to manage how fast the screen updates
@@ -102,6 +126,7 @@ def main():
 
         # LOGIC STUFF 
         player.update()
+        player.stop_at_border()
 
         # DRAW STUFF
 
