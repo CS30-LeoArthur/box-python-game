@@ -88,6 +88,7 @@ def main():
     wall_list.append(Wall(350, 250, 20, 300))
     wall_list.append(Wall(400, 70, 20, 200))
     wall_list.append(Wall(600, 300, 120, 20))
+    wall_list.append(Wall(500, 600, 250, 20))
 
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
@@ -116,7 +117,7 @@ def main():
         # LOGIC STUFF 
         player.update()
         for i in range(len(wall_list)):
-            if player.x > wall_list[i].x + wall_list[i].width and player.y > wall_list[i].y + wall_list[i].height and player.x + player.width > wall_list[i].x and player.y + player.height > wall_list[i].y:
+            if player.x < wall_list[i].x + wall_list[i].width and player.y < wall_list[i].y + wall_list[i].height and player.x + player.width > wall_list[i].x and player.y + player.height > wall_list[i].y:
                 player.return_to_start()
                 
 
