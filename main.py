@@ -1,5 +1,4 @@
 import pygame
-import random
 
 # Define Colors
 GREY = (128, 128, 128)
@@ -8,31 +7,28 @@ WHITE = (255, 255, 255)
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
 
+# Wall Class
+class Wall():
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
 
-wall_list = []
-for i in range(5):
-    x = random.randrange(50, 500)
-    y = random.randrange(50, 500)
-    width = random.randrange(20, 150)
-    height = random.randrange(20, 150)
-    if width > height:
-        height == 20
-        width == 150
-    elif height > width:
-        width == 20
-        height == 150
-    wall_list.append([x, y, width, height])
-# Player
+    def draw_wall(self, screen):
+        pygame.draw.rect(screen, GREY, [self.x, self.y, self.width, self.height])
+        
+# Player Class
 class Player():
-    def __init__(self):
+    def __init__(self, x, y, width, height, change_x, change_y):
         # Class attributes
-        self.player_x = 200
-        self.player_y = 380
-        self.player_width = 20
-        self.player_height = 20
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
         # player's speed and direction / vector
-        self.change_x = 0
-        self.change_y = 0
+        self.change_x = change_x
+        self.change_y = change_y
         
     
     def go_left(self):
@@ -48,57 +44,50 @@ class Player():
         self.change_y = 3
 
     def update(self):
-        self.player_x += self.change_x
+        self.x += self.change_x
 
-        self.player_y += self.change_y
+        self.y += self.change_y
 
     def stop(self):
         self.change_x = 0
         self.change_y = 0
 
-    def stop_at_border(self):
-        if self.player_x >= 730:
-            self.player_x = 730
-        elif self.player_x <= 70:
-            self.player_x = 70
-        elif self.player_y >= 730:
-            self.player_y = 730
-        elif self.player_y <= 70:
-            self.player_y = 70
-
-    def stop_at_walls(self):
-        for i in range(len(wall_list)):
-            if wall_list.x[i] == self.player_x + self.player_width or wall_list.x[i] + wall_list.width[i] == self.player_x:
-                self.player_x = 200
-            
-
+    def return_to_start(self):
+        self.x = 200
+        self.y = 380
+        self.change_x = 0
+        self.change_y = 0
 
     def draw_player(self, screen):
         screen.fill(WHITE)
-        pygame.draw.rect(screen, RED, [self.player_x, self.player_y, self.player_width, self.player_height])
+        pygame.draw.rect(screen, RED, [self.x, self.y, self.width, self.height])
 
 def main():
     # Initialize pygame
     pygame.init()
 
     # Screen
-    size = (800, 800)
+    size = (SCREEN_WIDTH, SCREEN_HEIGHT)
     screen = pygame.display.set_mode(size)
 
     # Create player
-    player = Player()
+    player = Player(200, 380, 20, 20, 0, 0)
 
-    # Make borders
-    def make_border():
-        # Borders
-        # Top side horizontal
-        pygame.draw.rect(screen, GREY, [50, 50, 700, 20])
-        # Right side vertical
-        pygame.draw.rect(screen, GREY, [50, 50, 20, 700])
-        # Bottom side horizontal
-        pygame.draw.rect(screen, GREY, [50, 750, 700, 20])
-        # Right side vertical
-        pygame.draw.rect(screen, GREY, [750, 50, 20, 720])
+    # Make wall list
+    wall_list = []
+
+
+    # append walls into list
+    # Border walls
+    wall_list.append(Wall(50, 50, 700, 20))
+    wall_list.append(Wall(50, 50, 20, 700))
+    wall_list.append(Wall(50, 750, 700, 20))
+    wall_list.append(Wall(750, 50, 20, 720))
+    wall_list.append(Wall(140, 200, 150, 20))
+    wall_list.append(Wall(140, 600, 150, 20))
+    wall_list.append(Wall(350, 250, 20, 300))
+    wall_list.append(Wall(400, 70, 20, 200))
+    wall_list.append(Wall(600, 300, 120, 20))
 
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
@@ -126,17 +115,18 @@ def main():
 
         # LOGIC STUFF 
         player.update()
-        player.stop_at_border()
+        for i in range(len(wall_list)):
+            if player.x > wall_list[i].x + wall_list[i].width and player.y > wall_list[i].y + wall_list[i].height and player.x + player.width > wall_list[i].x and player.y + player.height > wall_list[i].y:
+                player.return_to_start()
+                
 
-        # DRAW STUFF
+        # Draw Stuff
 
         # Player
         player.draw_player(screen)
-        # Draw rectangles in rectangle list
+        # Walls
         for i in range(len(wall_list)):
-            pygame.draw.rect(screen, GREY, wall_list[i])
-        # Borders
-        make_border()
+            wall_list[i].draw_wall(screen)
 
         clock.tick(60)
 
