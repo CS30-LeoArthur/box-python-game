@@ -45,6 +45,7 @@ class Player():
 
     def update(self):
         self.x += self.change_x
+        
 
         self.y += self.change_y
 
@@ -118,7 +119,15 @@ def main():
         player.update()
         for i in range(len(wall_list)):
             if player.x < wall_list[i].x + wall_list[i].width and player.y < wall_list[i].y + wall_list[i].height and player.x + player.width > wall_list[i].x and player.y + player.height > wall_list[i].y:
-                player.return_to_start()
+                print(player.change_x, player.change_y)
+                if player.change_x > 0:
+                    player.x = wall_list[i].x - player.width
+                elif player.change_x < 0:
+                    player.x = wall_list[i].x + wall_list[i].width
+                elif player.change_y > 0:
+                    player.y = wall_list[i].y - player.height
+                elif player.change_y < 0:
+                    player.y = wall_list[i].y + wall_list[i].height
                 
 
         # Draw Stuff
