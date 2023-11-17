@@ -86,8 +86,10 @@ class Player():
             back_to_start(self)
             
 
-    def stop(self):
+    def hzstop(self):
         self.change_x = 0
+    
+    def vtstop(self):
         self.change_y = 0
 
     def draw_player(self, screen):
@@ -126,10 +128,10 @@ def main():
                 elif event.key == pygame.K_DOWN:
                     player.go_down()
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                    player.stop()
-                elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                    player.stop()
+                if event.key == pygame.K_LEFT and player.change_x < 0 or event.key == pygame.K_RIGHT and player.change_x > 0:
+                    player.hzstop()
+                elif event.key == pygame.K_UP and player.change_y < 0 or event.key == pygame.K_DOWN and player.change_y > 0:
+                    player.vtstop()
 
         # LOGIC STUFF 
         player.update()       
